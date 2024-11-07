@@ -16,17 +16,14 @@ module.exports = {
 
 async function createProduct(req, res) {
   try {
-    const { name, priceInCents, initialStock, image, origin, category } =
-      req.body;
-    if (
-      !name ||
-      !priceInCents ||
-      !initialStock ||
-      !image ||
-      !origin ||
-      !category
-    ) {
+    const { name, priceInCents, initialStock, origin, category } = req.body;
+    if (!name || !priceInCents || !initialStock || !origin || !category) {
       return res.status(400).json({ message: "Required fields are missing" });
+    }
+
+    const image = req.file ? req.file.path : null;
+    if (!image) {
+      return res.status(400).json({ message: "Image is required" });
     }
 
     const newProduct = {
@@ -37,6 +34,7 @@ async function createProduct(req, res) {
       origin,
       category,
     };
+
     const product = await Product.create(newProduct);
 
     return res.status(201).json(product);
@@ -51,14 +49,31 @@ async function editProduct(req, res) {
     const { id } = req.params;
     const updates = req.body;
 
-    const product = await Product.findByIdAndUpdate(id, updates, {
-      new: true,
-    });
-
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    res.status(200).json({ message: "Product updated", product });
+
+    if (req.file) {
+      const oldImageUrl = product.image;
+      try {
+        const publicId = oldImageUrl.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`products/${publicId}`);
+      } catch (deleteError) {
+        console.error(
+          "Error deleting old image from Cloudinary:",
+          deleteError.message
+        );
+      }
+      const newImage = req.file.path;
+      updates.image = newImage;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updates, {
+      new: true,
+    });
+
+    res.status(200).json({ message: "Product updated", updatedProduct });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
