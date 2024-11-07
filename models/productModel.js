@@ -4,13 +4,9 @@ const Schema = mongoose.Schema;
 const productSchema = new Schema(
   {
     name: { type: String, required: true },
-    priceInCents: {
+    price: {
       type: Number,
       required: true,
-      validate: {
-        validator: Number.isInteger,
-        message: "Price must be an integer.",
-      },
       min: [0, "Price cannot be negative."],
     },
     initialStock: {

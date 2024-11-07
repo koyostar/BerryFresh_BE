@@ -16,8 +16,8 @@ module.exports = {
 
 async function createProduct(req, res) {
   try {
-    const { name, priceInCents, initialStock, origin, category } = req.body;
-    if (!name || !priceInCents || !initialStock || !origin || !category) {
+    const { name, price, initialStock, origin, category } = req.body;
+    if (!name || !price || !initialStock || !origin || !category) {
       return res.status(400).json({ message: "Required fields are missing" });
     }
 
@@ -28,7 +28,7 @@ async function createProduct(req, res) {
 
     const newProduct = {
       name,
-      priceInCents,
+      price,
       initialStock,
       image,
       origin,
