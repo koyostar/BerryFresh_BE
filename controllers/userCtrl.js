@@ -1,6 +1,6 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   registerUser,
@@ -9,6 +9,7 @@ module.exports = {
   updateUserProfile,
   changePassword,
   getAllUsers,
+  updateUserCart,
 };
 
 const generateToken = (id) => {
@@ -99,6 +100,8 @@ async function loginUser(req, res) {
       name: user.name,
       email: user.email,
       userType: user.userType,
+      phoneNumber: user.phoneNumber,
+      address: user.address,
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -183,14 +186,29 @@ async function changePassword(req, res) {
 
 async function getAllUsers(req, res) {
   try {
-    if (req.user.userType !== "Admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
-
     const users = await User.find({}).select("-password");
 
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+}
+
+async function updateUserCart(req, res) {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.cart = req.body.cart;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Cart updated successfully", cart: user.cart });
+  } catch (error) {
+    console.error("Error updating cart:", error);
+    res.status(500).json({ message: "Server error" });
   }
 }

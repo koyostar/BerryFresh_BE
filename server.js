@@ -5,6 +5,7 @@ const connectDB = require("./config/database");
 const productRoute = require("./routes/productRoute");
 const orderRoute = require("./routes/orderRoute");
 const userRoute = require("./routes/userRoute");
+const adminRoute = require("./routes/adminRoute");
 
 config();
 
@@ -19,5 +20,6 @@ connectDB();
 app.use("/product", productRoute);
 app.use("/order", orderRoute);
 app.use("/user", userRoute);
+app.use("/admin", adminRoute);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

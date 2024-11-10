@@ -31,6 +31,10 @@ const userSchema = new Schema(
       type: String,
       trim: true,
     },
+    postalCode: {
+      type: String,
+      trim: true,
+    },
     phoneNumber: {
       type: String,
       trim: true,

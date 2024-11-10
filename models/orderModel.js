@@ -8,33 +8,35 @@ const orderSchema = new Schema(
       ref: "User",
       required: false,
     },
-    guestDetails: {
-      name: {
+    shippingInfo: {
+      recipientName: {
         type: String,
-        required: function () {
-          return !this.user;
-        },
+        required: true,
         trim: true,
       },
       email: {
         type: String,
-        required: function () {
-          return !this.user;
-        },
+        required: true,
         trim: true,
       },
       address: {
         type: String,
-        required: function () {
-          return !this.user;
-        },
+        required: true,
+        trim: true,
+      },
+      country: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      postalCode: {
+        type: String,
+        required: true,
         trim: true,
       },
       phoneNumber: {
         type: String,
-        required: function () {
-          return !this.user;
-        },
+        required: true,
         trim: true,
       },
     },
@@ -61,7 +63,14 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+      enum: [
+        "Pending",
+        "Paid",
+        "Processing",
+        "Shipped",
+        "Delivered",
+        "Cancelled",
+      ],
       default: "Pending",
     },
   },

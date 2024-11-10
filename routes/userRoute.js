@@ -7,16 +7,16 @@ const {
   updateUserProfile,
   changePassword,
   getAllUsers,
-} = require("../controllers/userController");
+  updateUserCart,
+} = require("../controllers/userCtrl");
 const { protect, admin } = require("../middleware/authMiddleware");
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 router.get("/profile", protect, getUserProfile);
-router.put("/profile", protect, updateUserProfile);
-router.put("/profile/change-password", protect, changePassword);
-
-router.get("/admin", protect, admin, getAllUsers);
+router.put("/update-profile", protect, updateUserProfile);
+router.put("/change-password", protect, changePassword);
+router.put("/cart", protect, updateUserCart);
 
 module.exports = router;
